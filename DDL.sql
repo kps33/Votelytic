@@ -4,12 +4,12 @@ use ElectionManagementSystem;
 
 CREATE TABLE Election (
     ElectionID VARCHAR(50) PRIMARY KEY,
-    Year       YEAR,
-    Type       VARCHAR(50),          -- "Lok Sabha", "Vidhan Sabha", etc.
-    StartDate  DATE,
-    EndDate    DATE,
-    NominationStartDate DATE,
-    NominationEndDate DATE,
+    Year       YEAR NOT NULL,
+    Type       VARCHAR(50) NOT NULL,          -- "Lok Sabha", "Vidhan Sabha", etc.
+    StartDate  DATE NOT NULL,
+    EndDate    DATE NOT NULL,
+    NominationStartDate DATE NOT NULL,
+    NominationEndDate DATE NOT NULL,
     CHECK (EndDate >= StartDate),
     CHECK (NominationEndDate >= NominationStartDate)
 );
@@ -140,18 +140,18 @@ CREATE TABLE VoterBoothMap (
 );
 	
 CREATE TABLE VoterParticipation (
-    ParticipationID INT PRIMARY KEY,
-    VoterID         VARCHAR(50) NOT NULL,
-    ElectionID      VARCHAR(50) NOT NULL,
-    MethodName      VARCHAR(20) NOT NULL,   
+    VoterID         VARCHAR(50),
+    ElectionID      VARCHAR(50),
+    MethodName      VARCHAR(20) NOT NULL,
     TimeStamp       DATETIME,
+    PRIMARY KEY(VoterID,ElectionID),
     FOREIGN KEY (VoterID)    REFERENCES Voter(VoterID),
     FOREIGN KEY (ElectionID) REFERENCES Election(ElectionID),
     CHECK (MethodName IN ('ballot', 'proxy', 'electronic', 'postal'))
 );
 
 CREATE TABLE Vote (
-    VoteID      INT PRIMARY KEY,
+    VoteID  INT PRIMARY KEY,
     CandidateID VARCHAR(50) NOT NULL,
     ElectionID VARCHAR(50) NOT NULL,
     BoothID     VARCHAR(50) NOT NULL,
@@ -175,8 +175,4 @@ CREATE TABLE CandidateNominations (
    FOREIGN KEY (ConstituencyID) REFERENCES Constituency(ConstituencyID),
    PRIMARY KEY(ElectionID, ConstituencyID, CandidateID)
 );
-
-
-
-
 
